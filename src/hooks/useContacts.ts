@@ -12,13 +12,16 @@ export function useContacts() {
   const { contacts, setContacts, addContactToStore, updateContactInStore, removeContactFromStore } = useContactStore();
   const queryClient = useQueryClient();
 
-  // Form for adding new contacts
+  // Form for adding new contacts - UPDATED VALIDATION MODE
   const addForm = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
+      username: "",
       phone: "",
       address: "",
-    }
+    },
+    mode: "onBlur", // Validate on blur event
+    reValidateMode: "onBlur", // Re-validate on blur after submission
   });
 
   // Fetch contacts - only once on initial load

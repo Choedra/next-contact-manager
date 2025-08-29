@@ -14,14 +14,14 @@ export const getContacts = async (): Promise<Contact[]> => {
   return data.contacts as Contact[];
 };
 
-export const addContact = async (contact: { phone: string; address?: string }) => {
+export const addContact = async (contact: { username: string; phone: string; address?: string }) => {
   const client = getClient();
   const data = await client.request(AddContactDocument, { contact });
   if (!data?.addContact) throw new Error("Add failed");
   return data.addContact as Contact;
 };
 
-export const updateContact = async (params: { id: string; edits: { phone?: string; address?: string } }) => {
+export const updateContact = async (params: { id: string; edits: { username?: string; phone?: string; address?: string } }) => {
   const client = getClient();
   const data = await client.request(UpdateContactDocument, params);
   if (!data?.updateContact) throw new Error("Update failed");

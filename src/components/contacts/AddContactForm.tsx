@@ -26,8 +26,29 @@ export default function AddContactForm() {
         <Form {...addForm}>
           <form
             onSubmit={addForm.handleSubmit(onAdd)}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
+            className="grid grid-cols-1 md:grid-cols-4 gap-4"
           >
+            {/* Username Field */}
+            <FormField
+              control={addForm.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Username *</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="John Doe"
+                      disabled={isAdding}
+                      className="h-10"
+                      onBlur={field.onBlur} // This enables validation on blur
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs text-red-500 mt-1 min-h-[16px]" />
+                </FormItem>
+              )}
+            />
+
             {/* Phone Field */}
             <FormField
               control={addForm.control}
@@ -40,10 +61,11 @@ export default function AddContactForm() {
                       {...field}
                       placeholder="+975XXXXXXXX"
                       disabled={isAdding}
-                      className="w-full"
+                      className="h-10"
+                      onBlur={field.onBlur} // This enables validation on blur
                     />
                   </FormControl>
-                  <FormMessage className="min-h-[1.25rem] text-sm text-red-500" />
+                  <FormMessage className="text-xs text-red-500 mt-1 min-h-[16px]" />
                 </FormItem>
               )}
             />
@@ -60,20 +82,21 @@ export default function AddContactForm() {
                       {...field}
                       placeholder="Thimphu, Bhutan"
                       disabled={isAdding}
-                      className="w-full"
+                      className="h-10"
+                      onBlur={field.onBlur} // This enables validation on blur
                     />
                   </FormControl>
-                  <FormMessage className="min-h-[1.25rem] text-sm text-red-500" />
+                  <FormMessage className="text-xs text-red-500 mt-1 min-h-[16px]" />
                 </FormItem>
               )}
             />
 
             {/* Submit Button */}
-            <div className="flex items-end">
+            <div className="flex flex-col justify-end">
               <Button
                 type="submit"
                 disabled={isAdding}
-                className="w-full flex items-center justify-center gap-2"
+                className="h-10 flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors"
               >
                 {isAdding ? (
                   <>

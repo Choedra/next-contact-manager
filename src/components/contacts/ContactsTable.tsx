@@ -1,7 +1,20 @@
 "use client";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Loader2, User, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -59,16 +72,47 @@ export default function ContactsTable() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[40%]">Phone</TableHead>
-                <TableHead className="w-[40%]">Address</TableHead>
-                <TableHead className="text-right w-[20%]">Actions</TableHead>
+                <TableHead className="w-[30%]">Username</TableHead>
+                <TableHead className="w-[30%]">Phone</TableHead>
+                <TableHead className="w-[30%]">Address</TableHead>
+                <TableHead className="text-right w-[10%]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {contacts.map((contact) => (
                 <TableRow key={contact.id} className="group">
+                  {/* Username Cell */}
+                  <TableCell className="w-[30%]">
+                    {editingId === contact.id && editingField === "username" ? (
+                      <Input
+                        autoFocus
+                        value={editData[contact.id].username}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setEditData((prev) => ({
+                            ...prev,
+                            [contact.id]: {
+                              ...prev[contact.id],
+                              username: val,
+                            },
+                          }));
+                          debouncedUpdate(contact.id, "username", val);
+                        }}
+                        onBlur={stopEditing}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span
+                        className="inline-block h-8 px-2 align-middle cursor-pointer w-full truncate"
+                        onClick={() => startEditing(contact.id, "username")}
+                      >
+                        {contact.username}
+                      </span>
+                    )}
+                  </TableCell>
+
                   {/* Phone Cell */}
-                  <TableCell className="w-[40%]">
+                  <TableCell className="w-[30%]">
                     {editingId === contact.id && editingField === "phone" ? (
                       <Input
                         autoFocus
@@ -77,7 +121,10 @@ export default function ContactsTable() {
                           const val = e.target.value;
                           setEditData((prev) => ({
                             ...prev,
-                            [contact.id]: { ...prev[contact.id], phone: val },
+                            [contact.id]: {
+                              ...prev[contact.id],
+                              phone: val,
+                            },
                           }));
                           debouncedUpdate(contact.id, "phone", val);
                         }}
@@ -95,7 +142,7 @@ export default function ContactsTable() {
                   </TableCell>
 
                   {/* Address Cell */}
-                  <TableCell className="w-[40%]">
+                  <TableCell className="w-[30%]">
                     {editingId === contact.id && editingField === "address" ? (
                       <Input
                         autoFocus
@@ -104,7 +151,10 @@ export default function ContactsTable() {
                           const val = e.target.value;
                           setEditData((prev) => ({
                             ...prev,
-                            [contact.id]: { ...prev[contact.id], address: val },
+                            [contact.id]: {
+                              ...prev[contact.id],
+                              address: val,
+                            },
                           }));
                           debouncedUpdate(contact.id, "address", val);
                         }}
@@ -125,7 +175,7 @@ export default function ContactsTable() {
                   </TableCell>
 
                   {/* Actions */}
-                  <TableCell className="text-right w-[20%]">
+                  <TableCell className="text-right w-[10%]">
                     <Button
                       variant="destructive"
                       size="sm"

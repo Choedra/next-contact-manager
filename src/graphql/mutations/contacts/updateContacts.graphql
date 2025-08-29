@@ -1,6 +1,7 @@
 mutation UpdateContact($id: ID!, $edits: EditContactInput!) {
   updateContact(id: $id, edits: $edits) {
     id
+    username
     phone
     address
   }

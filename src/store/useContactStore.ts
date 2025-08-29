@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 export interface Contact {
   id: string;
+  username: string;
   phone: string;
   address?: string | null;
   userId?: string; 

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Contact input schema
 export const contactSchema = z.object({
+  username: z.string().min(1, "Username is required"),
   phone: z
     .string()
     .regex(/^(\+975)?\d{8}$/, "Phone must be exactly 8 digits, optionally starting with +975"),

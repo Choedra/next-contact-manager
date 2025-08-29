@@ -1,6 +1,15 @@
 import { LoginInput, RegisterInput } from "../components/auth/validation/auth-validation";
 import { LoginDocument, SignupDocument } from "../graphql/generated/graphql";
 import { getClient } from "../lib/graphql-client"; // ✅ use function
+interface GraphQLError {
+  message: string;
+}
+
+interface GraphQLResponseError extends Error {
+  response?: {
+    errors?: GraphQLError[];
+  };
+}
 
 const mapGraphQLError = (msg: string) => {
   if (msg.includes("Incorrect password")) return "Incorrect password. Try again!";
@@ -10,12 +19,13 @@ const mapGraphQLError = (msg: string) => {
 
 export const login = async (variables: LoginInput): Promise<string> => {
   try {
-    const client = getClient(); // ✅ fresh client with latest token
+    const client = getClient(); 
     const data = await client.request(LoginDocument, variables);
     return data.login.token;
-  } catch (err: any) {
-    if (err.response?.errors?.length) {
-      throw new Error(mapGraphQLError(err.response.errors[0].message));
+  } catch (err) {
+    const error = err as GraphQLResponseError;
+    if (error.response?.errors?.length) {
+      throw new Error(mapGraphQLError(error.response.errors[0].message));
     }
     throw new Error("Login failed. Please check your connection and try again.");
   }
@@ -26,9 +36,10 @@ export const signup = async (variables: RegisterInput): Promise<string> => {
     const client = getClient(); // ✅ fresh client
     const data = await client.request(SignupDocument, { user: variables });
     return data.signup.token;
-  } catch (err: any) {
-    if (err.response?.errors?.length) {
-      throw new Error(err.response.errors[0].message);
+  } catch (err) {
+    const error = err as GraphQLResponseError;
+    if (error.response?.errors?.length) {
+      throw new Error(error.response.errors[0].message);
     }
     throw new Error("Registration failed. Please check your connection and try again.");
   }
