@@ -3,8 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/useAuthStore";
-import { signup } from "../api/authApi";
-import { RegisterInput, registerSchema } from "../components/auth/authValidation";
+import { RegisterInput, registerSchema } from "../components/auth/validation/auth-validation";
+import { signup } from "../service/authApi";
 
 export function useRegister() {
   const router = useRouter();

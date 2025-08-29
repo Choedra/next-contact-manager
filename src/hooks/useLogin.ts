@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/useAuthStore";
-import { login } from "../api/authApi";
-import { LoginInput, loginSchema } from "../components/auth/authValidation";
+import { LoginInput, loginSchema } from "../components/auth/validation/auth-validation";
+import { login } from "../service/authApi";
 
 export function useLogin() {
   const router = useRouter();

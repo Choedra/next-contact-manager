@@ -1,0 +1,7 @@
+mutation AddContact($contact: AddContactInput!) {
+  addContact(contact: $contact) {
+    id
+    phone
+    address
+  }
+}

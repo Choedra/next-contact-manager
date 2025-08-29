@@ -1,17 +1,16 @@
-import { LoginInput, RegisterInput } from "../components/auth/authValidation";
+import { LoginInput, RegisterInput } from "../components/auth/validation/auth-validation";
 import { LoginDocument, SignupDocument } from "../graphql/generated/graphql";
-import { client } from "../lib/graphql-client";
+import { getClient } from "../lib/graphql-client"; // ✅ use function
 
-// Helper for GraphQL error mapping
 const mapGraphQLError = (msg: string) => {
   if (msg.includes("Incorrect password")) return "Incorrect password. Try again!";
   if (msg.includes("User not found")) return "No account found with this email.";
   return msg;
 };
 
-// Login
 export const login = async (variables: LoginInput): Promise<string> => {
   try {
+    const client = getClient(); // ✅ fresh client with latest token
     const data = await client.request(LoginDocument, variables);
     return data.login.token;
   } catch (err: any) {
@@ -22,9 +21,9 @@ export const login = async (variables: LoginInput): Promise<string> => {
   }
 };
 
-// Signup / Register
 export const signup = async (variables: RegisterInput): Promise<string> => {
   try {
+    const client = getClient(); // ✅ fresh client
     const data = await client.request(SignupDocument, { user: variables });
     return data.signup.token;
   } catch (err: any) {
