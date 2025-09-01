@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import debounce from "lodash/debounce";
 import { useContacts } from "./useContacts";
 
@@ -10,28 +10,37 @@ export function useEditableContacts() {
   const [editingField, setEditingField] = useState<EditField | null>(null);
   const [editData, setEditData] = useState<{ [key: string]: { username: string; phone: string; address: string } }>({});
 
+  // Create debounced function with useRef to prevent recreation
+  const debouncedUpdateRef = useRef(
+    debounce((id: string, field: EditField, value: string, onUpdate: any) => {
+      const trimmed = value.trim();
+      if (trimmed.length > 0) {
+        onUpdate(id, { [field]: trimmed });
+      }
+    }, 500)
+  );
+
+  // Initialize editData only once when contacts are loaded
   useEffect(() => {
-    setEditData((prev) => {
-      const updated = { ...prev };
+    if (contacts.length > 0 && Object.keys(editData).length === 0) {
+      const initialEditData: typeof editData = {};
       contacts.forEach((c) => {
-        if (!updated[c.id]) {
-          updated[c.id] = { username: c.username, phone: c.phone, address: c.address || "" };
-        }
+        initialEditData[c.id] = { 
+          username: c.username, 
+          phone: c.phone, 
+          address: c.address || "" 
+        };
       });
-      return updated;
-    });
-  }, [contacts]);
-
-  const debouncedUpdate = useCallback(
-  debounce((id: string, field: EditField, value: string) => {
-    const trimmed = value.trim();
-    if (trimmed.length > 0) {
-      onUpdate(id, { [field]: trimmed });
+      setEditData(initialEditData);
     }
-  }, 500),
-  [onUpdate]
-);
+  }, [contacts, editData]);
 
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedUpdateRef.current.cancel();
+    };
+  }, []);
 
   const startEditing = (id: string, field: EditField) => {
     setEditingId(id);
@@ -43,6 +52,20 @@ export function useEditableContacts() {
     setEditingField(null);
   };
 
+  // Update individual field without causing full state recalculation
+  const updateEditData = useCallback((id: string, field: EditField, value: string) => {
+    setEditData(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value
+      }
+    }));
+    
+    // Use the debounced update
+    debouncedUpdateRef.current(id, field, value, onUpdate);
+  }, [onUpdate]);
+
   return {
     contacts,
     isLoading,
@@ -50,11 +73,10 @@ export function useEditableContacts() {
     isDeleting,
     onDelete,
     editData,
-    setEditData,
+    updateEditData, // Replace setEditData with more specific function
     editingId,
     editingField,
     startEditing,
     stopEditing,
-    debouncedUpdate,
   };
 }

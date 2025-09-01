@@ -27,12 +27,12 @@ export default function ContactsTable() {
     isDeleting,
     onDelete,
     editData,
-    setEditData,
+    updateEditData, // Changed from setEditData
     editingId,
     editingField,
     startEditing,
     stopEditing,
-    debouncedUpdate,
+    // debouncedUpdate removed - handled internally now
   } = useEditableContacts();
 
   if (isLoading) {
@@ -86,17 +86,10 @@ export default function ContactsTable() {
                     {editingId === contact.id && editingField === "username" ? (
                       <Input
                         autoFocus
-                        value={editData[contact.id].username}
+                        value={editData[contact.id]?.username || ""}
                         onChange={(e) => {
                           const val = e.target.value;
-                          setEditData((prev) => ({
-                            ...prev,
-                            [contact.id]: {
-                              ...prev[contact.id],
-                              username: val,
-                            },
-                          }));
-                          debouncedUpdate(contact.id, "username", val);
+                          updateEditData(contact.id, "username", val);
                         }}
                         onBlur={stopEditing}
                         className="h-8"
@@ -116,17 +109,10 @@ export default function ContactsTable() {
                     {editingId === contact.id && editingField === "phone" ? (
                       <Input
                         autoFocus
-                        value={editData[contact.id].phone}
+                        value={editData[contact.id]?.phone || ""}
                         onChange={(e) => {
                           const val = e.target.value;
-                          setEditData((prev) => ({
-                            ...prev,
-                            [contact.id]: {
-                              ...prev[contact.id],
-                              phone: val,
-                            },
-                          }));
-                          debouncedUpdate(contact.id, "phone", val);
+                          updateEditData(contact.id, "phone", val);
                         }}
                         onBlur={stopEditing}
                         className="h-8"
@@ -146,17 +132,10 @@ export default function ContactsTable() {
                     {editingId === contact.id && editingField === "address" ? (
                       <Input
                         autoFocus
-                        value={editData[contact.id].address}
+                        value={editData[contact.id]?.address || ""}
                         onChange={(e) => {
                           const val = e.target.value;
-                          setEditData((prev) => ({
-                            ...prev,
-                            [contact.id]: {
-                              ...prev[contact.id],
-                              address: val,
-                            },
-                          }));
-                          debouncedUpdate(contact.id, "address", val);
+                          updateEditData(contact.id, "address", val);
                         }}
                         onBlur={stopEditing}
                         placeholder="Address (optional)"
