@@ -12,10 +12,10 @@ export function useEditableContacts() {
 
   // Create debounced function with useRef to prevent recreation
   const debouncedUpdateRef = useRef(
-    debounce((id: string, field: EditField, value: string, onUpdate: any) => {
+    debounce((id: string, field: EditField, value: string, updateFn: (id: string, data: { [field: string]: string }) => void) => {
       const trimmed = value.trim();
       if (trimmed.length > 0) {
-        onUpdate(id, { [field]: trimmed });
+        updateFn(id, { [field]: trimmed });
       }
     }, 500)
   );
@@ -37,8 +37,9 @@ export function useEditableContacts() {
 
   // Cleanup debounce on unmount
   useEffect(() => {
+    const debouncedUpdate = debouncedUpdateRef.current;
     return () => {
-      debouncedUpdateRef.current.cancel();
+      debouncedUpdate.cancel();
     };
   }, []);
 
@@ -73,7 +74,7 @@ export function useEditableContacts() {
     isDeleting,
     onDelete,
     editData,
-    updateEditData, // Replace setEditData with more specific function
+    updateEditData,
     editingId,
     editingField,
     startEditing,
